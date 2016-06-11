@@ -4,6 +4,9 @@
   "description": "A tool for managing configuration properties over various environments and versions",
   "main": "index.js",
   "scripts": {
+    "setup:db": "docker-machine create proper --driver virtualbox && eval $(docker-machine env proper) && docker run --name proper-mariadb -e MYSQL_ROOT_PASSWORD=proper-root -p 3306:3306 -d mariadb",
+    "teardown:db": "docker-machine rm proper",
+    "db:session": "docker run -it --link proper-mariadb:mysql --rm mariadb sh -c 'exec mysql -h\"$MYSQL_PORT_3306_TCP_ADDR\" -P\"$MYSQL_PORT_3306_TCP_PORT\" -uroot -p\"$MYSQL_ENV_MYSQL_ROOT_PASSWORD\"'",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
