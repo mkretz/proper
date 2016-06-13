@@ -1,6 +1,7 @@
 function StartServer () {
     var restify = require('restify');
-
+    var db = require('./database');
+    db.connectToDatabase();
     var server = restify.createServer();
     require('./project/project-routes')(server);
     server.use(restify.bodyParser());
