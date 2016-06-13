@@ -1,9 +1,10 @@
 function StartServer () {
     var restify = require('restify');
     var db = require('./database');
-    db.connectToDatabase();
+    var sequelize = db.connectToDatabase();
     var server = restify.createServer();
     require('./project/project-routes')(server);
+    require('./project/project-model').initialize(sequelize);
     server.use(restify.bodyParser());
     server.listen(8080, 'localhost', function () {
         console.log('server listening at localhost on port 8080');

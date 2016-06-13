@@ -16,6 +16,7 @@ function connectToDatabase() {
         .catch(function (err) {
             console.log('Unable to connect to the database:', err);
         });
+    return sequelize;
 }
 
 module.exports = {
