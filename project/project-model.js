@@ -1,7 +1,6 @@
-var Project;
-function initialize(sequelize) {
+module.exports = function (sequelize) {
     var Sequelize = require('sequelize');
-    Project = sequelize.define('project', {
+    var Project = sequelize.define('project', {
         name: {
             type: Sequelize.STRING
         },
@@ -14,11 +13,6 @@ function initialize(sequelize) {
     }, {
         freezeTableName: true
     });
-
-    Project.sync({force: true});
-}
-
-module.exports = {
-    initialize: initialize,
-    Project: Project
-}
+    Project.sync();
+    return Project;
+};
