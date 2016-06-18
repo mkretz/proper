@@ -8,11 +8,11 @@ module.exports = function (server) {
         data._links.push({rel: rel, href: server.router.render(routeName, reqParams)});
     }
 
-    function addLinks (dataArray, rel, routeName, reqParams, idParamName) {
+    function addLinks (dataArray, linkFunction, reqParams, idParamName) {
         _.forEach(dataArray, function (dataObject) {
             var dataValues = dataObject.dataValues;
             reqParams[idParamName] = dataValues.id;
-            addLink(dataValues, rel, routeName, reqParams);
+            linkFunction(dataValues, reqParams);
         })
     }
 

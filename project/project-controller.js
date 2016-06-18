@@ -3,11 +3,16 @@ var _ = require('lodash');
 
 function ProjectController(server, Project) {
     var utils = require('../utils')(server);
+    
+    function addProjectLinks(project, reqParams) {
+        utils.addLink(project, 'self', 'getproject', reqParams);
+        utils.addLink(project, 'environments', 'getenvironments', reqParams);
+    }
 
     function loadProject(req) {
         return Project.findById(req.params.projectid).then(function (project) {
             if (!_.isNull(project)) {
-                utils.addLink(project.dataValues, 'self', 'getproject', req.params);
+                addProjectLinks(project.dataValues,req.params);
                 return project;
             }
             else {
@@ -30,7 +35,7 @@ function ProjectController(server, Project) {
          getProjects: function (req, res) {
             Project.findAll({ limit: 10 })
                 .then(function (projects) {
-                    utils.addLinks(projects,'self','getproject',{},'projectid');
+                    utils.addLinks(projects, addProjectLinks, {}, 'projectid');
                     res.send(projects);
                 });
          },
