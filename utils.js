@@ -16,10 +16,23 @@ module.exports = function (server) {
         })
     }
 
+    function addRequestData(req, name, value) {
+        if (!req.proper) {
+            req.proper = {};
+        }
+        req.proper[name] = value;
+    }
+
+    function getRequestData(req, name) {
+        return (req.proper ? req.proper[name] : undefined);
+    }
+
     return {
 
         addLink: addLink,
-        addLinks: addLinks
+        addLinks: addLinks,
+        addRequestData: addRequestData,
+        getRequestData: getRequestData
 
     };
 };

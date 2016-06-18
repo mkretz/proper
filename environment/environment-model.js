@@ -1,6 +1,6 @@
-module.exports = function (sequelize, Environment) {
+module.exports = function (sequelize) {
     var Sequelize = require('sequelize');
-    var Project = sequelize.define('project', {
+    var Environment = sequelize.define('environment', {
         name: {
             type: Sequelize.STRING
         },
@@ -13,9 +13,5 @@ module.exports = function (sequelize, Environment) {
     }, {
         freezeTableName: true
     });
-    Project.hasMany(Environment);
-    Environment.belongsTo(Project);
-    Project.sync();
-    Environment.sync();
-    return Project;
+    return Environment;
 };

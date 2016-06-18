@@ -1,8 +1,24 @@
 var packageJson = require('../package.json');
+var _ = require('lodash');
 
 function ProjectController(server, Project) {
     var utils = require('../utils')(server);
+
+    function loadProject(req) {
+        return Project.findById(req.params.projectid).then(function (project) {
+            if (!_.isNull(project)) {
+                utils.addLink(project.dataValues, 'self', 'getproject', req.params);
+                return project;
+            }
+            else {
+                return Promise.reject();
+            }
+        });
+    }
+
      return {
+         loadProject: loadProject,
+
          getEntrypoint: function (req, res) {
              var entrypoint = {
                  name : packageJson.name,
@@ -19,10 +35,13 @@ function ProjectController(server, Project) {
                 });
          },
          getProject: function (req, res) {
-             Project.findById(req.params.projectid).then(function(project) {
-                 utils.addLink(project.dataValues,'self','getproject',req.params);
-                 res.send(project);
-             });
+             loadProject(req)
+                 .then(function (project) {
+                     res.send(project);
+                 },
+                 function () {
+                     res.send(404);
+                 });
          },
          createProject: function (req, res) {
             Project.create(req.body)
