@@ -1,6 +1,12 @@
 function EnvironmentController(server, ProjectController, Environment) {
     var utils = require('../utils')(server);
     var _ = require('lodash');
+
+    function addEnvironmentLinks(environment, reqParams) {
+        utils.addLink(environment, 'self', 'getenvironment', reqParams);
+        utils.addLink(environment, 'project', 'getproject', reqParams);
+    }
+
     return {
         getProject: function (req, res, next) {
             ProjectController.loadProject(req)
@@ -15,6 +21,7 @@ function EnvironmentController(server, ProjectController, Environment) {
         getEnvironments: function (req, res) {
             utils.getRequestData(req, 'project').getEnvironments()
                 .then(function (environments) {
+                    utils.addLinks(environments,addEnvironmentLinks,req.params,'environmentid');
                     res.send(environments);
                 })
         },
@@ -22,6 +29,7 @@ function EnvironmentController(server, ProjectController, Environment) {
             utils.getRequestData(req, 'project').getEnvironments({ where: {id: req.params.environmentid } })
                 .then(function (environment) {
                     if (environment.length > 0) {
+                        addEnvironmentLinks(environment[0].dataValues,req.params);
                         res.send(environment[0]);
                     }
                     else {
