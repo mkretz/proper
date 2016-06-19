@@ -2,7 +2,9 @@ module.exports = function (sequelize, Environment) {
     var Sequelize = require('sequelize');
     var Project = sequelize.define('project', {
         name: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
+            unique: true
         },
         description: {
             type: Sequelize.STRING
