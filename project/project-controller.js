@@ -1,5 +1,6 @@
 var packageJson = require('../package.json');
 var _ = require('lodash');
+var slug = require('slug');
 
 function ProjectController(server, Project) {
     var utils = require('../utils')(server);
@@ -49,12 +50,18 @@ function ProjectController(server, Project) {
                  });
          },
          createProject: function (req, res) {
-            Project.create(req.body)
-                .then(function (savedProject) {
-                    var pathParams = {projectid: savedProject.id};
-                    res.header('Location', server.router.render('getproject', pathParams));
-                    res.send(204);
-                })
+             if (req.body.name) {
+                 req.body.name = slug(req.body.name);
+                 Project.create(req.body)
+                     .then(function (savedProject) {
+                         var pathParams = {projectid: savedProject.id};
+                         res.header('Location', server.router.render('getproject', pathParams));
+                         res.send(204);
+                     })
+             }
+             else {
+                 res.send(400);
+             }
          },
          updateProject: function (req, res) {
              Project.update(req.body, {
