@@ -8,6 +8,7 @@ function ProjectController(server, Project) {
     function addProjectLinks(project, reqParams) {
         utils.addLink(project, 'self', 'getproject', reqParams);
         utils.addLink(project, 'environments', 'getenvironments', reqParams);
+        utils.addLink(project, 'versions', 'getversions', reqParams);
     }
 
     function loadProject(req) {

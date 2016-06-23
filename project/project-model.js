@@ -1,4 +1,4 @@
-module.exports = function (sequelize, Environment) {
+module.exports = function (sequelize, Environment, Version) {
     var Sequelize = require('sequelize');
     var Project = sequelize.define('project', {
         name: {
@@ -17,7 +17,10 @@ module.exports = function (sequelize, Environment) {
     });
     Project.hasMany(Environment);
     Environment.belongsTo(Project);
+    Project.hasMany(Version);
+    Version.belongsTo(Project);
     Project.sync();
     Environment.sync();
+    Version.sync();
     return Project;
 };
