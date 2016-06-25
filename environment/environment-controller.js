@@ -1,4 +1,4 @@
-function EnvironmentController(server, ProjectController, Environment) {
+function EnvironmentController(server, Environment) {
     var utils = require('../utils')(server);
     var _ = require('lodash');
     var slug = require('slug');
@@ -9,16 +9,6 @@ function EnvironmentController(server, ProjectController, Environment) {
     }
 
     return {
-        getProject: function (req, res, next) {
-            ProjectController.loadProject(req)
-                .then(function (project) {
-                        utils.addRequestData(req, 'project', project);
-                        next();
-                    },
-                    function () {
-                        res.send(404);
-                    })
-        },
         getEnvironments: function (req, res) {
             utils.getRequestData(req, 'project').getEnvironments()
                 .then(function (environments) {

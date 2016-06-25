@@ -24,8 +24,17 @@ function ProjectController(server, Project) {
     }
 
      return {
-         loadProject: loadProject,
 
+         addProject: function (req, res, next) {
+             loadProject(req)
+                .then(function (project) {
+                        utils.addRequestData(req, 'project', project);
+                        next();
+                    },
+                    function () {
+                        res.send(404);
+                    })
+         },
          getEntrypoint: function (req, res) {
              var entrypoint = {
                  name : packageJson.name,

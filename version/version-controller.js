@@ -1,4 +1,4 @@
-function VersionController(server, ProjectController, Version) {
+function VersionController(server, Version) {
     var utils = require('../utils')(server);
     var _ = require('lodash');
 
@@ -8,16 +8,6 @@ function VersionController(server, ProjectController, Version) {
     }
 
     return {
-        getProject: function (req, res, next) {
-            ProjectController.loadProject(req)
-                .then(function (project) {
-                        utils.addRequestData(req, 'project', project);
-                        next();
-                    },
-                    function () {
-                        res.send(404);
-                    })
-        },
         getVersions: function (req, res) {
             utils.getRequestData(req, 'project').getVersions()
                 .then(function (version) {
