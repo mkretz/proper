@@ -3,23 +3,27 @@ var restify = require('restify');
 var server = require('../server.js');
 var _ = require('lodash');
 
+function setupTestFixture(sequelize, done) {
+    var Project = sequelize.model('project');
+    var Version = sequelize.model('version');
+    var Environment = sequelize.model('environment');
+    Project.create({name: 'Test', description: 'Test'})
+        .then(function (project) {
+            return Version.create({number: '3.0.1', description: 'Test', projectId: project.id});
+        })
+        .then(function (version) {
+            return Environment.create({name: 'int-lyra', description: "Test", projectId: version.projectId});
+        })
+        .then(function () {
+            done();
+        });
+}
+
 before(function (done) {
     var db = require('./test-database');
     server.StartServer(db)
         .then(function (sequelize) {
-            var Project = sequelize.model('project');
-            var Version = sequelize.model('version');
-            var Environment = sequelize.model('environment');
-            Project.create({name: 'Test', description: 'Test'})
-                .then(function (project) {
-                    return Version.create({number: '3.0.1', description: 'Test', projectId: project.id});
-                })
-                .then(function (version) {
-                    return Environment.create({name: 'int-lyra', description: "Test", projectId: version.projectId});
-                })
-                .then(function () {
-                    done();
-                });
+            setupTestFixture(sequelize, done);
         });
 });
 
