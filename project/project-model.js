@@ -19,8 +19,5 @@ module.exports = function (sequelize, Environment, Version) {
     Environment.belongsTo(Project);
     Project.hasMany(Version);
     Version.belongsTo(Project);
-    Project.sync();
-    Environment.sync();
-    Version.sync();
     return Project;
 };

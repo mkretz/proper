@@ -6,8 +6,7 @@ function connectToDatabase() {
     var dbPwd = process.env.PROPER_DB_PWD;
     var dbHost = process.env.PROPER_DB_HOST;
     var dbPort = process.env.PROPER_DB_PORT;
-
-    var sequelize = new Sequelize('mysql://' + dbUser + ':' + dbPwd + '@' + dbHost +':' + dbPort + '/proper');
+    var sequelize = new Sequelize('sqlite://:memory:');
     return sequelize;
 }
 

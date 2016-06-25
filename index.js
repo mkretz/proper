@@ -1,1 +1,2 @@
-require('./server.js').StartServer();
+var db = require('./database');
+require('./server.js').StartServer(db);
