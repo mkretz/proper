@@ -8,7 +8,31 @@ function EnvironmentController(server, Environment) {
         utils.addLink(environment, 'project', 'getproject', reqParams);
     }
 
+    function loadEnvironment(req) {
+        return utils.getRequestData(req, 'project').getEnvironments({ where: {id: req.params.environmentid } })
+            .then(function (environment) {
+                if (environment.length > 0) {
+                    addEnvironmentLinks(environment[0].dataValues,req.params);
+                    return environment[0];
+                }
+                else {
+                    return Promise.reject();
+                }
+
+            });
+    }
+
     return {
+        addEnvironment: function (req, res, next) {
+            loadEnvironment(req)
+                .then(function (env) {
+                        utils.addRequestData(req, 'environment', env);
+                        next();
+                    },
+                    function () {
+                        res.send(404);
+                    })
+        },
         getEnvironments: function (req, res) {
             utils.getRequestData(req, 'project').getEnvironments()
                 .then(function (environments) {
@@ -17,17 +41,13 @@ function EnvironmentController(server, Environment) {
                 })
         },
         getEnvironment: function (req, res) {
-            utils.getRequestData(req, 'project').getEnvironments({ where: {id: req.params.environmentid } })
+            loadEnvironment(req)
                 .then(function (environment) {
-                    if (environment.length > 0) {
-                        addEnvironmentLinks(environment[0].dataValues,req.params);
-                        res.send(environment[0]);
-                    }
-                    else {
-                        res.send(404);
-                    }
-
-                })
+                    res.send(environment);
+                },
+                function () {
+                    res.send(404);
+                });
         },
         createEnvironment: function (req, res) {
             if (req.body.name) {
