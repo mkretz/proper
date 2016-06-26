@@ -7,11 +7,13 @@ function StartServer (db) {
     var Environment = require('./environment/environment-model')(sequelize);
     var Version = require('./version/version-model')(sequelize);
     var Project = require('./project/project-model')(sequelize, Environment, Version);
-    return syncdb.syncModels(Environment, Version, Project)
+    var Deployment = require('./deployment/deployment-model')(sequelize, Environment, Version);
+    return syncdb.syncModels(Environment, Version, Project, Deployment)
         .then(function () {
             require('./project/project-routes')(server, Project);
             require('./environment/environment-routes')(server, Project, Environment);
             require('./version/version-routes')(server, Project, Version);
+            require('./deployment/deployment-routes')(server, Project, Environment, Deployment);
             server.listen(8080, 'localhost', function () {
                 console.log('server listening at localhost on port 8080');
             });

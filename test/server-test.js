@@ -7,12 +7,16 @@ function setupTestFixture(sequelize, done) {
     var Project = sequelize.model('project');
     var Version = sequelize.model('version');
     var Environment = sequelize.model('environment');
+    var Deployment = sequelize.model('deployment');
     Project.create({name: 'Test', description: 'Test'})
         .then(function (project) {
             return Version.create({number: '3.0.1', description: 'Test', projectId: project.id});
         })
         .then(function (version) {
             return Environment.create({name: 'int-lyra', description: "Test", projectId: version.projectId});
+        })
+        .then(function (environment) {
+            return Deployment.create({environmentId: environment.id, versionId: 1, status: "planned"});
         })
         .then(function () {
             done();
@@ -135,8 +139,6 @@ describe('the environment endpoint', function() {
     it('should allow a GET', function (done) {
         client.get('/project/1/environment/1', function (err, req, res, data) {
             env = checkGetResponse(err,req,res,data,'invalid response from /project');
-            checkLinkPresent(env, 'self', 'expected self link to be present');
-            checkLinkPresent(env, 'project', 'expected project link to be present');
             done();
         });
     });
@@ -145,6 +147,31 @@ describe('the environment endpoint', function() {
         checkLinkPresent(env, 'self', 'expected self link to be present');
         checkLinkPresent(env, 'project', 'expected project link to be present');
         done();
+    });
+});
+
+describe('the deployment list endpoint', function() {
+    var deploymentList;
+    it('should allow a GET', function (done) {
+        client.get('/project/1/environment/1/deployment', function (err, req, res, data) {
+            deploymentList = checkGetResponse(err,req,res,data,'invalid response from /project/1/environment/1/deployment');
+            checkArrayLength(deploymentList, 1);
+            done();
+        });
+    });
+
+    it('should return one environment', function (done) {
+        checkArrayLength(deploymentList, 1);
+        done();
+    });
+});
+
+describe('the deployment endpoint', function() {
+    it('should allow a GET', function (done) {
+        client.get('/project/1/environment/1', function (err, req, res, data) {
+            checkGetResponse(err,req,res,data,'invalid response from /project');
+            done();
+        });
     });
 });
 
