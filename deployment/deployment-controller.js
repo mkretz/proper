@@ -44,13 +44,16 @@ function DeploymentController(server, Deployment) {
             utils.getRequestData(req, 'project').getVersions({ where: {id: req.body.versionId}})
                 .then(function (versions) {
                     if (versions.length > 0) {
-                        utils.getRequestData(req, 'environment').addVersion(versions[0], {status: req.body.status})
+                        Deployment.create({environmentId: req.params.environmentid, versionId: versions[0].id, status: "planned"})
                             .then(function (deployment) {
-                                var pathParams = {projectid: utils.getRequestData(req,'environment').projectId,
-                                    environmentid: deployment.environmentId,
-                                    deploymentid: deployment.id};
-                                res.header('Location', server.router.render('getdeployment', pathParams));
-                                res.send(204);
+                                utils.getRequestData(req, 'environment').addVersion(versions[0], {status: req.body.status})
+                                    .then(function () {
+                                        var pathParams = {projectid: utils.getRequestData(req,'environment').projectId,
+                                            environmentid: deployment.environmentId,
+                                            deploymentid: deployment.id};
+                                        res.header('Location', server.router.render('getdeployment', pathParams));
+                                        res.send(204);
+                                    });
                             });
                     }
                     else {
