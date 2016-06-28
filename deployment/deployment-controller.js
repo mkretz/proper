@@ -6,15 +6,17 @@ function DeploymentController(server, Deployment) {
     var _ = require('lodash');
 
     function addDeploymentLinks(deployment, reqParams) {
-
+        utils.addLink(deployment, 'self', 'getdeployment', reqParams);
+        utils.addLink(deployment, 'environment', 'getenvironment', reqParams);
+        utils.addLink(deployment, 'version', 'getversion', _.extend(reqParams, {versionid: deployment.versionId}));
     }
 
     function loadDeployment(req) {
-        return utils.getRequestData(req, 'environment').getVersions({ where: {id: req.params.deploymentid } })
+        return Deployment.findById(parseInt(req.params.deploymentid))
             .then(function (deployment) {
-                if (deployment.length > 0) {
-                    addDeploymentLinks(deployment[0].dataValues,req.params);
-                    return deployment[0];
+                if (deployment) {
+                    addDeploymentLinks(deployment.dataValues,req.params);
+                    return deployment;
                 }
                 else {
                     return Promise.reject();
@@ -25,7 +27,7 @@ function DeploymentController(server, Deployment) {
 
     return {
         getDeployments: function (req, res) {
-            utils.getRequestData(req, 'environment').getVersions()
+            Deployment.findAll({ where: { environmentId: utils.getRequestData(req, 'environment').id } })
                 .then(function (deployments) {
                     utils.addLinks(deployments, addDeploymentLinks, req.params,'deploymentid');
                     res.send(deployments);
@@ -62,10 +64,10 @@ function DeploymentController(server, Deployment) {
                 });
         },
         deleteDeployment: function (req, res) {
-            utils.getRequestData(req, 'environment').getVersions({ where: {id: req.params.deploymentid } })
-                .then(function (deployments) {
-                    if (deployments.length > 0) {
-                        utils.getRequestData(req, 'environment').removeVersion(deployments)
+            Deployment.findById(parseInt(req.params.deploymentid))
+                .then(function (deployment) {
+                    if (deployment) {
+                        Deployment.destroy({ where: {id: req.params.deploymentid}})
                             .then(function () {
                                 res.send(204);
                             });

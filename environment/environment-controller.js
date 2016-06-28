@@ -6,6 +6,7 @@ function EnvironmentController(server, Environment) {
     function addEnvironmentLinks(environment, reqParams) {
         utils.addLink(environment, 'self', 'getenvironment', reqParams);
         utils.addLink(environment, 'project', 'getproject', reqParams);
+        utils.addLink(environment, 'deployments', 'getdeployments', reqParams);
     }
 
     function loadEnvironment(req) {

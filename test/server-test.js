@@ -143,9 +143,10 @@ describe('the environment endpoint', function() {
         });
     });
 
-    it('should link to project and itself', function (done) {
+    it('should link to project,itself and deployments', function (done) {
         checkLinkPresent(env, 'self', 'expected self link to be present');
         checkLinkPresent(env, 'project', 'expected project link to be present');
+        checkLinkPresent(env, 'deployments', 'expected deployments link to be present');
         done();
     });
 });
@@ -167,11 +168,19 @@ describe('the deployment list endpoint', function() {
 });
 
 describe('the deployment endpoint', function() {
+    var deployment;
     it('should allow a GET', function (done) {
-        client.get('/project/1/environment/1', function (err, req, res, data) {
-            checkGetResponse(err,req,res,data,'invalid response from /project');
+        client.get('/project/1/environment/1/deployment/1', function (err, req, res, data) {
+            deployment = checkGetResponse(err,req,res,data,'invalid response from /project');
             done();
         });
+    });
+
+    it('should link to itself, environment and version', function (done) {
+        checkLinkPresent(deployment, 'self', 'expected self link to be present');
+        checkLinkPresent(deployment, 'environment', 'expected environment link to be present');
+        checkLinkPresent(deployment, 'version', 'expected version link to be present');
+        done();
     });
 });
 
