@@ -1,4 +1,4 @@
-module.exports = function (sequelize, Environment, Version) {
+module.exports = function (sequelize, Environment, Version, ConfigFile) {
     var Sequelize = require('sequelize');
     var Deployment = sequelize.define('deployment', {
         id: {
@@ -18,5 +18,7 @@ module.exports = function (sequelize, Environment, Version) {
 
     Environment.belongsToMany(Version, { through: Deployment });
     Version.belongsToMany(Environment, { through: Deployment });
+    Deployment.hasMany(ConfigFile);
+    ConfigFile.belongsTo(Deployment);
     return Deployment;
 };

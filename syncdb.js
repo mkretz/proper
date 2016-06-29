@@ -1,4 +1,4 @@
-function syncModels(Environment, Version, Project, Deployment) {
+function syncModels(Environment, Version, Project, Deployment, ConfigFile) {
     return Project.sync()
         .then(function () {
            return Environment.sync();
@@ -8,6 +8,9 @@ function syncModels(Environment, Version, Project, Deployment) {
         })
         .then(function () {
             return Deployment.sync();
+        })
+        .then(function () {
+            return ConfigFile.sync();
         });
 }
 

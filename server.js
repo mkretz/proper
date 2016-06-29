@@ -6,9 +6,10 @@ function StartServer (db) {
     server.use(restify.bodyParser());
     var Environment = require('./environment/environment-model')(sequelize);
     var Version = require('./version/version-model')(sequelize);
+    var ConfigFile = require('./config-file/config-file-model')(sequelize);
     var Project = require('./project/project-model')(sequelize, Environment, Version);
-    var Deployment = require('./deployment/deployment-model')(sequelize, Environment, Version);
-    return syncdb.syncModels(Environment, Version, Project, Deployment)
+    var Deployment = require('./deployment/deployment-model')(sequelize, Environment, Version, ConfigFile);
+    return syncdb.syncModels(Environment, Version, Project, Deployment, ConfigFile)
         .then(function () {
             require('./project/project-routes')(server, Project);
             require('./environment/environment-routes')(server, Project, Environment);
