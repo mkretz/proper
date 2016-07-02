@@ -15,6 +15,7 @@ function StartServer (db) {
             require('./environment/environment-routes')(server, Project, Environment);
             require('./version/version-routes')(server, Project, Version);
             require('./deployment/deployment-routes')(server, Project, Environment, Deployment);
+            require('./config-file/config-file-routes')(server,Project, Environment, Deployment, ConfigFile)
             server.listen(8080, 'localhost', function () {
                 console.log('server listening at localhost on port 8080');
             });

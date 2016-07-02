@@ -26,6 +26,16 @@ function DeploymentController(server, Deployment) {
     }
 
     return {
+        addDeployment: function (req, res, next) {
+            loadDeployment(req)
+                .then(function (deployment) {
+                        utils.addRequestData(req, 'deployment', deployment);
+                        next();
+                    },
+                    function () {
+                        res.send(404);
+                    })
+        },
         getDeployments: function (req, res) {
             Deployment.findAll({ where: { environmentId: utils.getRequestData(req, 'environment').id } })
                 .then(function (deployments) {
