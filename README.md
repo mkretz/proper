@@ -15,7 +15,8 @@ A tool for managing configuration properties over various environments and versi
 {"name":"proper","version":"0.0.1","_links":[{"rel":"projects","href":"/project"}]}
 ```
 
-### Unit tests
+### Tests
+The tests run against the API. They use an sqlite in-memory db. Therefore, a connection to the real db is not required.
 1. Shut down the Proper server (to avoid port conflicts)
 1. Run `npm test` to execute the mocha unit tests.
 
