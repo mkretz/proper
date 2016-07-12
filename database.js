@@ -12,11 +12,7 @@ function createDatabaseIfNeeded(dbHost, dbPort, dbRootPwd, dbName, dbUser, dbPwd
     var promiseQuery = promise.promisify(connection.query, {context: connection});
     return promiseQuery('create DATABASE ' + dbName)
         .then(function () {
-            var createUserSql = 'create user ' + dbUser + ' identified by ' + dbPwd;
-            return promiseQuery(createUserSql);
-        })
-        .then(function () {
-            var createUserSql = 'create user ' + dbUser + ' identified by ' + dbPwd;
+            var createUserSql = 'create user \'' + dbUser + '\' identified by \'' + dbPwd +'\'';
             return promiseQuery(createUserSql);
         })
         .then(function () {
@@ -33,21 +29,31 @@ function createDatabaseIfNeeded(dbHost, dbPort, dbRootPwd, dbName, dbUser, dbPwd
 }
 
 function connectToDatabase() {
+
+    var dbRootPwdDefault = 'proper-root';
+    var dbPwdDefault = 'proper';
+    
     var Sequelize = require('sequelize');
 
-    // db creation env variables
+    // db creation env variables, defaults for dev environment
     var dbName = process.env.PROPER_DB_NAME || 'proper';
-    var dbRootPwd = process.env.PROPER_DB_ROOT_PWD || 'proper-root';
+    var dbRootPwd = process.env.PROPER_DB_ROOT_PWD || dbRootPwdDefault;
 
-    // db connection env variables
-    var dbUser = process.env.PROPER_DB_USER;
-    var dbPwd = process.env.PROPER_DB_PWD;
-    var dbHost = process.env.PROPER_DB_HOST;
-    var dbPort = process.env.PROPER_DB_PORT;
+    // db connection env variables, defaults for dev environment
+    var dbUser = process.env.PROPER_DB_USER || 'properuser';
+    var dbPwd = process.env.PROPER_DB_PWD || dbPwdDefault;
+    var dbHost = process.env.PROPER_DB_HOST || '127.0.0.1';
+    var dbPort = process.env.PROPER_DB_PORT || '3307';
+
+    if (dbRootPwd === dbRootPwdDefault || dbPwd === dbPwdDefault) {
+        console.log('****************************************************************');
+        console.log('Using default database credentials. Not safe for production use!');
+        console.log('****************************************************************');
+    }
 
     return createDatabaseIfNeeded(dbHost, dbPort, dbRootPwd, dbName, dbUser, dbPwd)
         .then(function () {
-            var sequelize = new Sequelize('mysql://' + dbUser + ':' + dbPwd + '@' + dbHost +':' + dbPort + '/proper');
+            var sequelize = new Sequelize('mysql://' + dbUser + ':' + dbPwd + '@' + dbHost +':' + dbPort + '/' + dbName);
             return sequelize;
         });
 }

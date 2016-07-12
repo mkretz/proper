@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "setup:db": "docker run --name proper-mariadb -e MYSQL_ROOT_PASSWORD=proper-root -p 3307:3306 -d mariadb",
-    "teardown:db": "docker-machine rm proper",
+    "teardown:db": "docker stop proper-mariadb && docker rm proper-mariadb",
     "db:session": "docker run -it --link proper-mariadb:mysql --rm mariadb sh -c 'exec mysql -h\"$MYSQL_PORT_3306_TCP_ADDR\" -P\"$MYSQL_PORT_3306_TCP_PORT\" -uroot -p\"$MYSQL_ENV_MYSQL_ROOT_PASSWORD\"'",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/mocha/bin/_mocha --ui bdd ./test"
   },
   "repository": {
     "type": "git",
